@@ -1,7 +1,6 @@
 #!/bin/sh
-
-
 PROG=`basename "$0"`
+
 if [ $# -eq 0 ]
 then
  echo "The resource group is mandatory :  $PROG <resource_group_name>"
@@ -11,17 +10,16 @@ else
 fi
 
 HOSTS=$(azure vm list --json -g $RESOURCE_GRP_NAME | jq .[].name | sed ':a;N;$!ba;s/\n/ /g' | sed 's/"//g')
-#echo "HOSTS: $HOSTS"
 
 for HOST in $HOSTS
 do
  echo "===================================================="
  echo " - HOST       : $HOST"
- curl -s $HOST:2375/info > $HOST.json
+ HOST_INFO=$(curl -s $HOST:2375/info)
  
- NODE_ID=$(cat $HOST.json | jq .Swarm.NodeID | sed 's/"//g')
- NODE_ADDR=$(cat $HOST.json | jq .Swarm.NodeAddr | sed 's/"//g')
- CLUSTER_ID=$(cat $HOST.json | jq .Swarm.Cluster.ID | sed 's/"//g')
+ NODE_ID=$(echo $HOST_INFO | jq .Swarm.NodeID | sed 's/"//g')
+ NODE_ADDR=$(echo $HOST_INFO | jq .Swarm.NodeAddr | sed 's/"//g')
+ CLUSTER_ID=$(echo $HOST_INFO | jq .Swarm.Cluster.ID | sed 's/"//g')
 
  echo " - NODE_ID    : $NODE_ID"
  echo " - NODE_ADDR  : $NODE_ADDR"
@@ -87,5 +85,4 @@ do
    done
  fi
   
- rm $HOST.json
 done
