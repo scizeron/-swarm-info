@@ -11,16 +11,23 @@ fi
 
 HOSTS=$(azure vm list --json -g $RESOURCE_GRP_NAME | jq .[].name | sed ':a;N;$!ba;s/\n/ /g' | sed 's/"//g')
 
+echo ""
+
 for HOST in $HOSTS
 do
- echo "===================================================="
- echo " - HOST       : $HOST"
  HOST_INFO=$(curl -s $HOST:2375/info)
- 
  NODE_ID=$(echo $HOST_INFO | jq .Swarm.NodeID | sed 's/"//g')
+
+ if [ -z $NODE_ID ]
+ then
+  continue
+ fi
+
  NODE_ADDR=$(echo $HOST_INFO | jq .Swarm.NodeAddr | sed 's/"//g')
  CLUSTER_ID=$(echo $HOST_INFO | jq .Swarm.Cluster.ID | sed 's/"//g')
 
+ echo "========================================================================"
+ echo " - HOST       : $HOST"
  echo " - NODE_ID    : $NODE_ID"
  echo " - NODE_ADDR  : $NODE_ADDR"
 
@@ -29,7 +36,6 @@ do
    echo " - CLUSTER_ID : $CLUSTER_ID"
    SERVICES=$(curl -s $HOST:2375/services)
    SERVICES_LEN=$(echo $SERVICES | jq length)
-   #SERVICE_NAMES=$(echo $SERVICES | jq .[].Spec.Name | sed ':a;N;$!ba;s/\n/ /g' | sed 's/"//g')
    SERVICE_IDS=$(echo $SERVICES | jq .[].ID | sed ':a;N;$!ba;s/\n/ /g' | sed 's/"//g')
    echo " - SERVICES   : $SERVICES_LEN"
 
@@ -86,3 +92,8 @@ do
  fi
   
 done
+
+echo "========================================================================"
+echo ""
+
+exit 0
