@@ -98,7 +98,7 @@ do
      ##########################################################################
      # TASKS
      #########################################################################
-     tasks=$(curl -s $host:$dockerRemoteApiPort/tasks?service=$serviceName)
+     tasks=$(curl -s -G -XGET $host:$dockerRemoteApiPort/tasks --data-urlencode "filters={\"service\":[\"$serviceName\"]}")
      tasksLen=$(echo $tasks | jq '. | length')
      taskIdx=0
      while [ $taskIdx -lt $tasksLen ]
