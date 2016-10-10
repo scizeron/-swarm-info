@@ -49,8 +49,9 @@ do
    do
     nodeName=$(echo $nodes | jq .[$nodeIdx].Description.Hostname | sed 's/"//g')
     nodeId=$(echo $nodes | jq .[$nodeIdx].ID | sed 's/"//g')
+    nodeStatus=$(echo $nodes | jq .[$nodeIdx].Status.State | sed 's/"//g')
     declare "node$nodeId"=$nodeName    
-    echo "  - node      : $nodeName  - id: $nodeId"
+    echo "  - node      : $nodeName  - id: $nodeId, status: $nodeStatus"
     nodeIdx=$(expr $nodeIdx + 1)
    done
 
