@@ -17,3 +17,4 @@ It's based on the docker remote API :
 ## Execution
 Give a resource group name in parameter like this : ./swarm.info.sh my-resource-group
 
+![alt tag](https://github.com/scizeron/swarm-info/blob/master/output.jpg)
