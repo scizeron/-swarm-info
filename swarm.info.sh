@@ -15,6 +15,8 @@ fi
 hosts=$(azure vm list --json -g $resourceGroupName | jq .[].name | sed ':a;N;$!ba;s/\n/ /g' | sed 's/"//g')
 
 echo ""
+echo "========================================================================"
+echo " '${resourceGroupName}' swarm info "
 
 for host in $hosts
 do
